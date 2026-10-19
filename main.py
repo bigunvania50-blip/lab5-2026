@@ -1,75 +1,77 @@
-from src.library import Library
-from src.book import Book
-from src.magazine import Magazine
+from src.team_manager import TeamManager
+from src.player import Player
+from src.coach import Coach
+from src.staff import Staff
+
 
 def main():
-    # Створення бібліотеки
-    library = Library()
+    team = TeamManager("Cyber Eagles")
 
-    # Додавання книг
-    book1 = Book("1984", "George Orwell", 1949, "978-0451524935")
-    book2 = Book("To Kill a Mockingbird", "Harper Lee", 1960, "978-0446310789")
-    book3 = Book("The Great Gatsby", "F. Scott Fitzgerald", 1925, "978-0743273565")
+    team.add_member(Player("Олег Коваль", 21, 3000, "Falcon", 90))
+    team.add_member(Player("Іван Мельник", 19, 2500, "Storm", 82))
+    team.add_member(Player("Андрій Шевчук", 23, 3500, "Ghost", 95))
+    team.add_member(Coach("Максим Бондар", 35, 4000, 10))
+    team.add_member(Staff("Марія Ткач", 28, 2000, "Аналітик"))
 
-    library.add_item(book1)
-    library.add_item(book2)
-    library.add_item(book3)
-
-    # Додавання журналів
-    magazine1 = Magazine("National Geographic", "Various", 2023, 1)
-    magazine2 = Magazine("Time", "Various", 2023, 15)
-
-    library.add_item(magazine1)
-    library.add_item(magazine2)
-
-    # Виведення всіх предметів у бібліотеці
-    print("Всі предмети в бібліотеці:")
-    for item in library._items:
-        print(item)
+    print(team)
     print()
 
-    # Пошук за ключовим словом
-    keyword = "Orwell"
-    print(f"Результати пошуку за ключовим словом '{keyword}':")
-    for item in library.search(keyword):
-        print(item)
+    print("Усі учасники команди:")
+    for member in team.members:
+        print(member)
     print()
 
-    # Пошук за роком
-    year = 1925
-    print(f"Результати пошуку за роком {year}:")
-    for item in library.search_by_year(year):
-        print(item)
+    print("Що робить кожен (поліморфізм):")
+    for member in team.members:
+        print(member.work())
     print()
 
-    # Отримання всіх книг
-    print("Всі книги в бібліотеці:")
-    for book in library.get_all_books():
-        print(book)
+    print("Пошук за іменем 'Іван':")
+    for member in team.find_by_name("Іван"):
+        print(member)
     print()
 
-    # Отримання всіх журналів
-    print("Всі журнали в бібліотеці:")
-    for magazine in library.get_all_magazines():
-        print(magazine)
+    print("Тільки гравці:")
+    for member in team.filter_by_role(Player):
+        print(member)
     print()
 
-    # Видалення предмету
-    print("Видалення 'To Kill a Mockingbird'")
-    library.remove_item(book2)
-
-    # Виведення оновленого списку предметів
-    print("Оновлений список предметів у бібліотеці:")
-    for item in library._items:
-        print(item)
+    print("Зарплата від 3000$:")
+    for member in team.filter_by_min_salary(3000):
+        print(member)
     print()
 
-    # Спроба додати неправильний тип об'єкта
-    print("Спроба додати неправильний тип об'єкта:")
+    print("Сортування за зарплатою (від більшої до меншої):")
+    for member in team.sort_by_salary(reverse=True):
+        print(member)
+    print()
+
+    print("Сортування за віком:")
+    for member in team.sort_by_age():
+        print(member)
+    print()
+
+    print("Приклад repr:")
+    print(repr(team.members[0]))
+    print()
+
+    print("Видаляємо Марію Ткач")
+    team.remove_member(team.find_by_name("Марія")[0])
+    print(team)
+    print()
+
+    print("Спроба додати неправильний об'єкт:")
     try:
-        library.add_item("Це не об'єкт LibraryItem")
-    except TypeError as e:
-        print(f"Помилка: {e}")
+        team.add_member("Не учасник")
+    except TypeError as error:
+        print(f"Помилка: {error}")
+
+    print("Спроба створити гравця з рейтингом 150:")
+    try:
+        Player("Тест", 20, 1000, "Test", 150)
+    except ValueError as error:
+        print(f"Помилка: {error}")
+
 
 if __name__ == "__main__":
     main()
